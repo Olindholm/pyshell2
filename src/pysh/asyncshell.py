@@ -22,7 +22,7 @@ async def sh(args: List[str], check_exitcode=True):
             lines.append(line)
             logging.log(loglevel, line)
 
-        return "".join(lines)
+        return "\n".join(lines)
 
     exitcode, stdout, stderr = await asyncio.gather(
         process.wait(),
