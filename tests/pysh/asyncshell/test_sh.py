@@ -1,3 +1,4 @@
+from subprocess import CalledProcessError
 import pytest
 import logging
 from asyncio import subprocess, StreamReader
@@ -117,3 +118,28 @@ async def test_stderr_logged(
 
     # Assert
     assert logging_log.mock_calls == [call(logging.ERROR, line) for line in stderr]
+
+
+@pytest.mark.asyncio
+@patch("asyncio.subprocess.create_subprocess_shell")
+async def test_check_exitcode_true(
+    create_subprocess_shell: MagicMock,
+) -> None:
+    # Arrange
+    create_subprocess_shell.return_value = process_mock(1)
+
+    # Act & Assert
+    with pytest.raises(CalledProcessError):
+        await sh(["ls", "-a"], check_exitcode=True)
+
+
+@pytest.mark.asyncio
+@patch("asyncio.subprocess.create_subprocess_shell")
+async def test_check_exitcode_false(
+    create_subprocess_shell: MagicMock,
+) -> None:
+    # Arrange
+    create_subprocess_shell.return_value = process_mock(1)
+
+    # Act & Assert
+    await sh(["ls", "-a"], check_exitcode=False)
