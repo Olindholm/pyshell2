@@ -9,6 +9,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = [
     "black",
+    "isort",
     "pytest",
     "mypy",
     "flake8",
@@ -22,6 +23,14 @@ requires = [
     "wheel",
 ]
 build-backend = "setuptools.build_meta"
+
+
+[tool.black]
+line-length = 88
+
+
+[tool.isort]
+profile = "black"
 
 
 [tool.pytest.ini_options]

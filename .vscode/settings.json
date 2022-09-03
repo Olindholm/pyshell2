@@ -30,6 +30,9 @@
     // Python
     "[python]": {
         "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+        },
     },
     "python.formatting.provider": "black",
 }

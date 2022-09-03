@@ -1,8 +1,8 @@
-import logging
 import asyncio
-from typing import List, Optional, Tuple
-from asyncio import subprocess, StreamReader
+import logging
+from asyncio import StreamReader, subprocess
 from subprocess import CalledProcessError
+from typing import List, Optional, Tuple
 
 
 async def sh(args: List[str], check_exitcode: bool = True) -> Tuple[int, str, str]:

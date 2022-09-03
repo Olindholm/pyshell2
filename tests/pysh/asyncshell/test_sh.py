@@ -1,14 +1,12 @@
-import pytest
 import logging
-from typing import List
+from asyncio import StreamReader, subprocess
 from subprocess import CalledProcessError
-from asyncio import subprocess, StreamReader
-from unittest.mock import AsyncMock, MagicMock, patch, call
+from typing import List
+from unittest.mock import AsyncMock, MagicMock, call, patch
+
+import pytest
 
 from pysh.asyncshell import sh
-
-# TODO
-# test_check_exitcode
 
 
 def stream(lines: List[str] = []) -> StreamReader:
