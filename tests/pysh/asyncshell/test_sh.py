@@ -24,7 +24,7 @@ def process_mock(
     exitcode: int,
     stdout: List[str] = [],
     stderr: List[str] = [],
-) -> MagicMock():
+) -> MagicMock:
     process = MagicMock()
     process.wait = AsyncMock(return_value=exitcode)
     process.stdout = stream(stdout)

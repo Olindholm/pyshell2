@@ -1,6 +1,31 @@
+[project]
+name = "pysh"
+version = "0+dev"
+requires-python = ">=3.8"
+
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "pytest",
+    "mypy",
+]
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = "-s"
 pythonpath = [
     "src",
 ]
+
+
+[tool.mypy]
+disallow_untyped_defs = true

@@ -1,11 +1,11 @@
 import logging
 import asyncio
-from typing import List
+from typing import List, Optional, Tuple
 from asyncio import subprocess, StreamReader
 from subprocess import CalledProcessError
 
 
-async def sh(args: List[str], check_exitcode=True):
+async def sh(args: List[str], check_exitcode: bool = True) -> Tuple[int, str, str]:
     cmd = " ".join(args)
     process = await subprocess.create_subprocess_shell(
         cmd=cmd,
@@ -13,14 +13,15 @@ async def sh(args: List[str], check_exitcode=True):
         stderr=subprocess.PIPE,
     )
 
-    async def read_stream(stream: StreamReader, loglevel: int):
+    async def read_stream(stream: Optional[StreamReader], loglevel: int) -> str:
         lines: List[str] = []
 
-        while bdata := await stream.readline():
-            line = bdata.decode().rstrip("\n")  # Decode and remove trailing newline
+        if stream is not None:
+            while bdata := await stream.readline():
+                line = bdata.decode().rstrip("\n")  # Decode and remove trailing newline
 
-            lines.append(line)
-            logging.log(loglevel, line)
+                lines.append(line)
+                logging.log(loglevel, line)
 
         return "\n".join(lines)
 

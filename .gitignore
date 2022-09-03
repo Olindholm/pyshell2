@@ -1,2 +1,5 @@
-# Ignore python cached files
+# Python
+dist/
+*.egg-info
 __pycache__
+.mypy_cache
