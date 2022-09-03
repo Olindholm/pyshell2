@@ -1,11 +1,21 @@
 import asyncio
 import logging
 from asyncio import StreamReader, subprocess
+from collections import namedtuple
+from pathlib import Path
 from subprocess import CalledProcessError
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
+
+ProcessInfo = namedtuple("ProcessInfo", "exitcode stdout stderr")
 
 
-async def sh(args: List[str], check_exitcode: bool = True) -> Tuple[int, str, str]:
+DEFAULT_CHECK_EXITCODE = True
+
+
+async def sh(
+    args: List[str],
+    check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
+) -> ProcessInfo:
     cmd = " ".join(args)
     process = await subprocess.create_subprocess_shell(
         cmd=cmd,
@@ -34,4 +44,19 @@ async def sh(args: List[str], check_exitcode: bool = True) -> Tuple[int, str, st
     if check_exitcode and exitcode != 0:
         raise CalledProcessError(exitcode, cmd, stdout, stderr)
 
-    return exitcode, stdout, stderr
+    return ProcessInfo(exitcode, stdout, stderr)
+
+
+async def docker_run(
+    image: str,
+    args: List[str],
+    volumes: Dict[Path, Path] = {},
+    check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
+) -> ProcessInfo:
+    cmd = [
+        "docker run",
+        *[f"-v {src.resolve()}:{dst.as_posix()}" for src, dst in volumes.items()],
+        image,
+        *args,
+    ]
+    return await sh(cmd, check_exitcode=check_exitcode)
