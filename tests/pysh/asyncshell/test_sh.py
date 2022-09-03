@@ -1,8 +1,8 @@
-from subprocess import CalledProcessError
 import pytest
 import logging
+from typing import List
+from subprocess import CalledProcessError
 from asyncio import subprocess, StreamReader
-from typing import List, Optional, Tuple
 from unittest.mock import AsyncMock, MagicMock, patch, call
 
 from pysh.asyncshell import sh
