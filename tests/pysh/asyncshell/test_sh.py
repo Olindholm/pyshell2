@@ -39,12 +39,12 @@ async def test_create_subprocess_shell_called(
     create_subprocess_shell.return_value = process_mock(0)
 
     # Act
-    await sh(["ls", "-a"])
+    await sh(["ls", "-a", "./folder with space in it"])
 
     # Assert
     assert create_subprocess_shell.call_args_list == [
         call(
-            cmd="ls -a",
+            cmd='ls -a "./folder with space in it"',
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
