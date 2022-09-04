@@ -57,13 +57,18 @@ async def sh(
 async def docker_run(
     image: str,
     args: List[str],
+    entrypoint: Optional[str] = None,
     volumes: Dict[Path, Path] = {},
     check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
 ) -> ProcessInfo:
-    cmd = [
-        "docker run",
-        *[f"-v {src.resolve()}:{dst.as_posix()}" for src, dst in volumes.items()],
-        image,
-        *args,
-    ]
+    cmd = ["docker", "run"]
+
+    if entrypoint:
+        cmd += ["--entrypoint", entrypoint]
+
+    for src, dst in volumes.items():
+        cmd += ["-v", f"{src.resolve()}:{dst.as_posix()}"]
+
+    cmd += [image, *args]
+
     return await sh(cmd, check_exitcode=check_exitcode)
