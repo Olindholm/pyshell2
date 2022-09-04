@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 from asyncio import StreamReader, subprocess
 from collections import namedtuple
 from pathlib import Path
@@ -12,6 +13,10 @@ ProcessInfo = namedtuple("ProcessInfo", "exitcode stdout stderr")
 DEFAULT_STDOUT_LOG_LEVEL = logging.INFO
 DEFAULT_STDERR_LOG_LEVEL = logging.ERROR
 DEFAULT_CHECK_EXITCODE = True
+
+# Constants
+DOCKER_USER_ME = f"{os.getuid()}:{os.getgid()}"
+DOCKER_USER_ROOT = "0:0"
 
 
 def _cmd(args: List[str]) -> str:
@@ -61,6 +66,7 @@ async def sh(
 async def docker_run(
     image: str,
     args: List[str],
+    user: Optional[str] = None,
     entrypoint: Optional[str] = None,
     volumes: Dict[Path, Path] = {},
     stdout_log_level: int = DEFAULT_STDOUT_LOG_LEVEL,
@@ -68,6 +74,9 @@ async def docker_run(
     check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
 ) -> ProcessInfo:
     cmd = ["docker", "run"]
+
+    if user:
+        cmd += ["--user", user]
 
     if entrypoint:
         cmd += ["--entrypoint", entrypoint]
