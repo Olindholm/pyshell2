@@ -8,7 +8,9 @@ from typing import Dict, List, Optional
 
 ProcessInfo = namedtuple("ProcessInfo", "exitcode stdout stderr")
 
-
+# Defaults
+DEFAULT_STDOUT_LOG_LEVEL = logging.INFO
+DEFAULT_STDERR_LOG_LEVEL = logging.ERROR
 DEFAULT_CHECK_EXITCODE = True
 
 
@@ -33,6 +35,8 @@ async def _read_stream(stream: Optional[StreamReader], loglevel: int) -> str:
 
 async def sh(
     args: List[str],
+    stdout_log_level: int = DEFAULT_STDOUT_LOG_LEVEL,
+    stderr_log_level: int = DEFAULT_STDERR_LOG_LEVEL,
     check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
 ) -> ProcessInfo:
     cmd = _cmd(args)
@@ -44,8 +48,8 @@ async def sh(
 
     exitcode, stdout, stderr = await asyncio.gather(
         process.wait(),
-        _read_stream(process.stdout, logging.INFO),
-        _read_stream(process.stderr, logging.ERROR),
+        _read_stream(process.stdout, stdout_log_level),
+        _read_stream(process.stderr, stderr_log_level),
     )
 
     if check_exitcode and exitcode != 0:
@@ -59,6 +63,8 @@ async def docker_run(
     args: List[str],
     entrypoint: Optional[str] = None,
     volumes: Dict[Path, Path] = {},
+    stdout_log_level: int = DEFAULT_STDOUT_LOG_LEVEL,
+    stderr_log_level: int = DEFAULT_STDERR_LOG_LEVEL,
     check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
 ) -> ProcessInfo:
     cmd = ["docker", "run"]
@@ -71,4 +77,9 @@ async def docker_run(
 
     cmd += [image, *args]
 
-    return await sh(cmd, check_exitcode=check_exitcode)
+    return await sh(
+        cmd,
+        stdout_log_level=stdout_log_level,
+        stderr_log_level=stderr_log_level,
+        check_exitcode=check_exitcode,
+    )

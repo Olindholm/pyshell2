@@ -77,12 +77,13 @@ async def test_stdout_logged(
     # Arrange
     stdout = [".", "..", "folder0", "folder1", "file0", "file1", "file2"]
     create_subprocess_shell.return_value = process_mock(0, stdout=stdout)
+    log_level = -12
 
     # Act
-    await sh(["ls", "-a"])
+    await sh(["ls", "-a"], stdout_log_level=log_level)
 
     # Assert
-    assert logging_log.mock_calls == [call(logging.INFO, line) for line in stdout]
+    assert logging_log.mock_calls == [call(log_level, line) for line in stdout]
 
 
 @pytest.mark.asyncio
@@ -110,12 +111,13 @@ async def test_stderr_logged(
     # Arrange
     stderr = ["file0: Permission Denied", "file1: Permission Denied"]
     create_subprocess_shell.return_value = process_mock(0, stderr=stderr)
+    log_level = -13
 
     # Act
-    await sh(["ls", "-a"])
+    await sh(["ls", "-a"], stderr_log_level=log_level)
 
     # Assert
-    assert logging_log.mock_calls == [call(logging.ERROR, line) for line in stderr]
+    assert logging_log.mock_calls == [call(log_level, line) for line in stderr]
 
 
 @pytest.mark.asyncio
