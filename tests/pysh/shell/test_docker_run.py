@@ -28,10 +28,10 @@ def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
 @patch("pysh.shell.asyncshell.docker_run")
 def test_return_value(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
-    asyncshell_sh_mock.return_value = ProcessInfo("exitcode", "stdout", "stderr")
+    asyncshell_sh_mock.return_value = ProcessInfo(292, "stdout", "stderr")
 
     # Act
     process_info = docker_run("docker-image", [])
 
     # Assert
-    assert process_info == ProcessInfo("exitcode", "stdout", "stderr")
+    assert process_info == ProcessInfo(292, "stdout", "stderr")

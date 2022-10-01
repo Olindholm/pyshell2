@@ -2,12 +2,9 @@ import asyncio
 import logging
 import os
 from asyncio import StreamReader, subprocess
-from collections import namedtuple
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import Dict, List, Optional
-
-ProcessInfo = namedtuple("ProcessInfo", "exitcode stdout stderr")
+from typing import Dict, List, NamedTuple, Optional
 
 # Defaults
 DEFAULT_STDOUT_LOG_LEVEL = logging.INFO
@@ -17,6 +14,12 @@ DEFAULT_CHECK_EXITCODE = True
 # Constants
 DOCKER_USER_ME = f"{os.getuid()}:{os.getgid()}"
 DOCKER_USER_ROOT = "0:0"
+
+
+class ProcessInfo(NamedTuple):
+    exitcode: int
+    stdout: str
+    stderr: str
 
 
 def _cmd(args: List[str]) -> str:
