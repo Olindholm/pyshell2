@@ -1,15 +1,7 @@
 {
-    // Hide cached files
-    // Hopefully, this won't be needed one day, as vscode
-    // will just ignore all .gitignored files...
-    // https://github.com/microsoft/vscode/issues/38878
-    // But until then...
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.pytest_cache": true,
-        "**/.mypy_cache": true,
-        "**/*.egg-info": true,
-    },
+    // Hide files ignored by git
+    "explorer.excludeGitIgnore": true,
+    "files.exclude": {},
 
     // Formatting
     "files.insertFinalNewline": true,
@@ -28,6 +20,9 @@
     // will be detected based on the file contents. Set to false to keep
     // the values you've explicitly set, above.
     "editor.detectIndentation": false,
+
+    // Ruler for black
+    "editor.rulers": [88],
 
     // Python
     "[python]": {

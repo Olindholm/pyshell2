@@ -1,4 +1,5 @@
 import inspect
+from typing import Any, Dict
 from unittest.mock import MagicMock, call, patch
 
 from pysh import asyncshell
@@ -12,7 +13,7 @@ def test_signature() -> None:
 @patch("pysh.shell.asyncshell.sh")
 def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
-    params = {
+    params: Dict[str, Any] = {
         param: index for index, param in enumerate(inspect.signature(sh).parameters)
     }
 

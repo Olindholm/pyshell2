@@ -1,5 +1,6 @@
 # Python
-dist/
-*.egg-info
 __pycache__
+*.egg-info
+.pytest_cache
 .mypy_cache
+.tox
