@@ -3,8 +3,6 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from . import asyncshell
-from .asyncshell import DOCKER_USER_ME  # noqa: F401
-from .asyncshell import DOCKER_USER_ROOT  # noqa: F401
 from .asyncshell import (
     DEFAULT_CHECK_EXITCODE,
     DEFAULT_STDERR_LOG_LEVEL,
