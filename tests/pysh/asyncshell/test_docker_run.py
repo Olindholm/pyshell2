@@ -114,7 +114,7 @@ from pysh.asyncshell import (
         (
             {
                 "image": "pysh/cat",
-                "args": ["/mnt/story0.txt", "/mnt/story1.txt"],
+                "args": ["/mnt/chp0.txt", "/mnt/chp1.txt"],
                 "volumes": {
                     Path("chp0.txt"): Path("/mnt/chp0.txt"),
                     Path("chp1.txt"): Path("/mnt/chp1.txt"),
@@ -131,8 +131,8 @@ from pysh.asyncshell import (
                     "-v",
                     f"{Path('chp1.txt').resolve()}:{Path('/mnt/chp1.txt').as_posix()}",
                     "pysh/cat",
-                    "/mnt/story0.txt",
-                    "/mnt/story1.txt",
+                    "/mnt/chp0.txt",
+                    "/mnt/chp1.txt",
                 ],
                 "stdout_log_level": DEFAULT_STDOUT_LOG_LEVEL,
                 "stderr_log_level": DEFAULT_STDERR_LOG_LEVEL,
