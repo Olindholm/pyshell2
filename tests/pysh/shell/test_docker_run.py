@@ -14,7 +14,7 @@ def test_docstring() -> None:
     assert inspect.getdoc(docker_run) == inspect.getdoc(asyncshell.docker_run)
 
 
-@patch("pysh.shell.asyncshell.docker_run")
+@patch("pysh.asyncshell.docker_run")
 def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
     signature = inspect.signature(docker_run)
@@ -29,7 +29,7 @@ def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
     assert asyncshell_sh_mock.call_args_list == [call(**params)]
 
 
-@patch("pysh.shell.asyncshell.docker_run")
+@patch("pysh.asyncshell.docker_run")
 def test_return_value(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
     asyncshell_sh_mock.return_value = ProcessInfo(292, "stdout", "stderr")
