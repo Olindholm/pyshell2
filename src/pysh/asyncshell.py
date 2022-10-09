@@ -22,12 +22,6 @@ class ProcessInfo(NamedTuple):
     stderr: str
 
 
-def _cmd(args: List[str]) -> str:
-    # Wrap args containing whitespace with quotes
-    args = [f'"{arg}"' if " " in arg else arg for arg in args]
-    return " ".join(args)
-
-
 async def _read_stream(stream: Optional[StreamReader], loglevel: int) -> str:
     lines: List[str] = []
 
@@ -47,7 +41,25 @@ async def sh(
     stderr_log_level: int = DEFAULT_STDERR_LOG_LEVEL,
     check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
 ) -> ProcessInfo:
-    cmd = _cmd(args)
+    """Runs a shell command.
+
+    Args:
+        args: Command arguments to run in shell. Arguments containing spaces will be
+            wrapped in quotes.'
+        stdout_log_level: Log level of the stdout of the shell command.
+        stderr_log_level: Log level of the stderr of the shell command.
+        check_exitcode: Whether to check if the exit code is zero or not. If true and
+            exitcode is non-zero, a CalledProcessError will be raised.
+    Returns:
+        A ProcessInfo containing the exitcode, stdout, and stderr from the command.
+    Raises:
+        CalledProcessError: If the shell command exited with a non-zero exitcode and
+            check_exitcode is true.
+    """
+    # Wrap args containing whitespace with quotes
+    args = [f'"{arg}"' if " " in arg else arg for arg in args]
+    cmd = " ".join(args)
+
     process = await subprocess.create_subprocess_shell(
         cmd=cmd,
         stdout=subprocess.PIPE,
@@ -69,28 +81,40 @@ async def sh(
 async def docker_run(
     image: str,
     args: List[str],
+    detached: bool = False,
+    cleanup: bool = True,
     user: Optional[str] = None,
     entrypoint: Optional[str] = None,
-    volumes: Dict[Path, Path] = {},
+    volumes: Dict[Path, Path] = None,
+    network: Optional[str] = None,
     stdout_log_level: int = DEFAULT_STDOUT_LOG_LEVEL,
     stderr_log_level: int = DEFAULT_STDERR_LOG_LEVEL,
     check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
 ) -> ProcessInfo:
-    cmd = ["docker", "run"]
+    """Runs a docker run command."""
+    cmd = [
+        "docker",
+        "run",
+        f"-d={str(detached).lower()}",
+        f"--rm={str(cleanup).lower()}",
+    ]
 
-    if user:
+    if user is not None:
         cmd += ["--user", user]
 
-    if entrypoint:
+    if entrypoint is not None:
         cmd += ["--entrypoint", entrypoint]
 
-    for src, dst in volumes.items():
-        cmd += ["-v", f"{src.resolve()}:{dst.as_posix()}"]
+    if volumes is not None:
+        for src, dst in volumes.items():
+            cmd += ["-v", f"{src.resolve()}:{dst.as_posix()}"]
+
+    if network is not None:
+        cmd += ["--network", network]
 
     cmd += [image, *args]
-
     return await sh(
-        cmd,
+        args=cmd,
         stdout_log_level=stdout_log_level,
         stderr_log_level=stderr_log_level,
         check_exitcode=check_exitcode,

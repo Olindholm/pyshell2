@@ -10,6 +10,10 @@ def test_signature() -> None:
     assert inspect.signature(docker_run) == inspect.signature(asyncshell.docker_run)
 
 
+def test_docstring() -> None:
+    assert inspect.getdoc(docker_run) == inspect.getdoc(asyncshell.docker_run)
+
+
 @patch("pysh.shell.asyncshell.docker_run")
 def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
