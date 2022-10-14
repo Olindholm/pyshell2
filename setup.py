@@ -5,6 +5,7 @@ deps = {
 }
 test_deps = {
     "pytest>=7",
+    "pytest-cov",
 }
 typing_deps = {
     "mypy",

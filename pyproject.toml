@@ -16,7 +16,7 @@ profile = "black"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = ""
+addopts = "--cov"
 pythonpath = "src"
 
 
