@@ -13,6 +13,8 @@ from pysh.asyncshell import (
     docker_run,
 )
 
+EQ = '\\"'  # Esacped quote
+
 
 @pytest.mark.parametrize(
     "docker_run_kwargs, sh_kwargs",
@@ -101,8 +103,14 @@ from pysh.asyncshell import (
                     "run",
                     "-d=false",
                     "--rm=true",
-                    "-v",
-                    f"{Path('.').resolve()}:{Path('/mnt/dir').as_posix()}",
+                    "--mount",
+                    ",".join(
+                        [
+                            "type=bind",
+                            f"{EQ}src={Path('.').resolve()}{EQ}",
+                            f"{EQ}dst={Path('/mnt/dir').resolve()}{EQ}",
+                        ]
+                    ),
                     "pysh/ls",
                     "/mnt/dir",
                 ],
@@ -126,10 +134,22 @@ from pysh.asyncshell import (
                     "run",
                     "-d=false",
                     "--rm=true",
-                    "-v",
-                    f"{Path('chp0.txt').resolve()}:{Path('/mnt/chp0.txt').as_posix()}",
-                    "-v",
-                    f"{Path('chp1.txt').resolve()}:{Path('/mnt/chp1.txt').as_posix()}",
+                    "--mount",
+                    ",".join(
+                        [
+                            "type=bind",
+                            f"{EQ}src={Path('chp0.txt').resolve()}{EQ}",
+                            f"{EQ}dst={Path('/mnt/chp0.txt').resolve()}{EQ}",
+                        ]
+                    ),
+                    "--mount",
+                    ",".join(
+                        [
+                            "type=bind",
+                            f"{EQ}src={Path('chp1.txt').resolve()}{EQ}",
+                            f"{EQ}dst={Path('/mnt/chp1.txt').resolve()}{EQ}",
+                        ]
+                    ),
                     "pysh/cat",
                     "/mnt/chp0.txt",
                     "/mnt/chp1.txt",

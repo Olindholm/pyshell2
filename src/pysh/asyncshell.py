@@ -169,7 +169,13 @@ async def docker_run(
 
     if volumes is not None:
         for src, dst in volumes.items():
-            cmd += ["-v", f"{src.resolve()}:{dst.as_posix()}"]
+            escaped_quote = '\\"'
+            mount = [
+                "type=bind",
+                f"{escaped_quote}src={src.resolve()}{escaped_quote}",
+                f"{escaped_quote}dst={dst.resolve()}{escaped_quote}",
+            ]
+            cmd += ["--mount", ",".join(mount)]
 
     if network is not None:
         cmd += ["--network", network]
