@@ -1,0 +1,14 @@
+name: Check
+on: [push]
+jobs:
+  Python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure pip
+        run: pip install pip --upgrade
+      - name: Ensure tox
+        run: pip install tox
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Run tox
+        run: tox
