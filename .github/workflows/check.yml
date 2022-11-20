@@ -7,7 +7,7 @@ jobs:
       - name: Ensure pip
         run: pip install pip --upgrade
       - name: Ensure tox
-        run: pip install tox
+        run: pip install tox --upgrade
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Run tox
