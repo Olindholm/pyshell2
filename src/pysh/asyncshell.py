@@ -147,7 +147,7 @@ async def docker_run(
     cleanup: bool = True,
     user: Optional[str] = None,
     entrypoint: Optional[str] = None,
-    volumes: Dict[Path, Path] = None,
+    volumes: Optional[Dict[Path, Path]] = None,
     network: Optional[str] = None,
     stdout_log_level: int = DEFAULT_STDOUT_LOG_LEVEL,
     stderr_log_level: int = DEFAULT_STDERR_LOG_LEVEL,
