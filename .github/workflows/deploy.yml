@@ -33,7 +33,7 @@ jobs:
         run: python -m build --wheel
       - name: Upload Package
         run: |
-          python -m twine \
+          python -m twine upload \
             --verbose \
             --username __token__ \
             --password ${{ secrets.PYPI_TOKEN }} \
