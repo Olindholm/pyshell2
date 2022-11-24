@@ -2,40 +2,41 @@ import inspect
 from typing import Any, Dict
 from unittest.mock import MagicMock, call, patch
 
-from pysh import asyncshell
-from pysh.shell import ProcessInfo, docker_run
+from pyshell2 import asyncdocker
+from pyshell2.docker import docker_sh
+from pyshell2.shell import ProcessInfo
 
 
 def test_signature() -> None:
-    assert inspect.signature(docker_run) == inspect.signature(asyncshell.docker_run)
+    assert inspect.signature(docker_sh) == inspect.signature(asyncdocker.docker_sh)
 
 
 def test_docstring() -> None:
-    assert inspect.getdoc(docker_run) == inspect.getdoc(asyncshell.docker_run)
+    assert inspect.getdoc(docker_sh) == inspect.getdoc(asyncdocker.docker_sh)
 
 
-@patch("pysh.asyncshell.docker_run")
+@patch("pyshell2.asyncdocker.docker_sh")
 def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
-    signature = inspect.signature(docker_run)
+    signature = inspect.signature(docker_sh)
     params: Dict[str, Any] = {
         param: index for index, param in enumerate(signature.parameters)
     }
 
     # Act
-    docker_run(**params)
+    docker_sh(**params)
 
     # Assert
     assert asyncshell_sh_mock.call_args_list == [call(**params)]
 
 
-@patch("pysh.asyncshell.docker_run")
+@patch("pyshell2.asyncdocker.docker_sh")
 def test_return_value(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
     asyncshell_sh_mock.return_value = ProcessInfo(292, "stdout", "stderr")
 
     # Act
-    process_info = docker_run("docker-image", [])
+    process_info = docker_sh("docker-image", [])
 
     # Assert
     assert process_info == ProcessInfo(292, "stdout", "stderr")

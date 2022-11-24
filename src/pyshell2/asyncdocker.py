@@ -1,48 +1,21 @@
-import asyncio
+import os
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from . import asyncshell
-from .asyncshell import (
+from pyshell2.asyncshell import (
     DEFAULT_CHECK_EXITCODE,
     DEFAULT_STDERR_LOG_LEVEL,
     DEFAULT_STDOUT_LOG_LEVEL,
     ProcessInfo,
+    sh,
 )
 
-
-def sh(
-    args: List[str],
-    stdout_log_level: int = DEFAULT_STDOUT_LOG_LEVEL,
-    stderr_log_level: int = DEFAULT_STDERR_LOG_LEVEL,
-    check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
-) -> ProcessInfo:
-    """Runs a shell command.
-
-    Args:
-        args: Command arguments to run. Arguments containing spaces will be wrapped in
-            quotes.
-        stdout_log_level: Log level of the stdout of the shell command.
-        stderr_log_level: Log level of the stderr of the shell command.
-        check_exitcode: Whether to check if the exit code is zero or not. If true and
-            exitcode is non-zero, a CalledProcessError will be raised.
-    Returns:
-        A ProcessInfo containing the exitcode, stdout, and stderr from the command.
-    Raises:
-        CalledProcessError: If the shell command exited with a non-zero exitcode and
-            check_exitcode is true.
-    """
-    return asyncio.run(
-        asyncshell.sh(
-            args=args,
-            stdout_log_level=stdout_log_level,
-            stderr_log_level=stderr_log_level,
-            check_exitcode=check_exitcode,
-        )
-    )
+# Constants
+DOCKER_USER_ME = f"{os.getuid()}:{os.getgid()}"
+DOCKER_USER_ROOT = "0:0"
 
 
-def sh_docker(
+async def docker_sh(
     image: str,
     args: List[Union[str, Path]],
     user: Optional[str] = None,
@@ -81,21 +54,30 @@ def sh_docker(
         CalledProcessError: If the shell command exited with a non-zero exitcode and
             check_exitcode is true.
     """
-    return asyncio.run(
-        asyncshell.sh_docker(
-            image=image,
-            args=args,
-            user=user,
-            entrypoint=entrypoint,
-            network=network,
-            stdout_log_level=stdout_log_level,
-            stderr_log_level=stderr_log_level,
-            check_exitcode=check_exitcode,
-        )
+    files = dict.fromkeys([arg for arg in args if isinstance(arg, Path)])
+
+    volumes: Dict[Path, Path] = {}
+    for i, file in enumerate(files):
+        volumes[file] = Path(f"/mnt/{i}/{file.name}")
+
+    return await docker_run(
+        image=image,
+        args=[
+            volumes[arg].as_posix() if isinstance(arg, Path) else arg for arg in args
+        ],
+        detached=False,
+        cleanup=True,
+        user=user,
+        entrypoint=entrypoint,
+        volumes=volumes,
+        network=network,
+        stdout_log_level=stdout_log_level,
+        stderr_log_level=stderr_log_level,
+        check_exitcode=check_exitcode,
     )
 
 
-def docker_run(
+async def docker_run(
     image: str,
     args: List[str],
     detached: bool = False,
@@ -109,18 +91,36 @@ def docker_run(
     check_exitcode: bool = DEFAULT_CHECK_EXITCODE,
 ) -> ProcessInfo:
     """Runs a docker run command."""
-    return asyncio.run(
-        asyncshell.docker_run(
-            image=image,
-            args=args,
-            detached=detached,
-            cleanup=cleanup,
-            user=user,
-            entrypoint=entrypoint,
-            volumes=volumes,
-            network=network,
-            stdout_log_level=stdout_log_level,
-            stderr_log_level=stderr_log_level,
-            check_exitcode=check_exitcode,
-        )
+    cmd = [
+        "docker",
+        "run",
+        f"-d={str(detached).lower()}",
+        f"--rm={str(cleanup).lower()}",
+    ]
+
+    if user is not None:
+        cmd += ["--user", user]
+
+    if entrypoint is not None:
+        cmd += ["--entrypoint", entrypoint]
+
+    if volumes is not None:
+        for src, dst in volumes.items():
+            escaped_quote = '\\"'
+            mount = [
+                "type=bind",
+                f"{escaped_quote}src={src.resolve()}{escaped_quote}",
+                f"{escaped_quote}dst={dst.resolve()}{escaped_quote}",
+            ]
+            cmd += ["--mount", ",".join(mount)]
+
+    if network is not None:
+        cmd += ["--network", network]
+
+    cmd += [image, *args]
+    return await sh(
+        args=cmd,
+        stdout_log_level=stdout_log_level,
+        stderr_log_level=stderr_log_level,
+        check_exitcode=check_exitcode,
     )

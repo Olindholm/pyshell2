@@ -51,8 +51,12 @@ dev_deps = {
 }
 
 setup(
-    name="pysh",
+    # General
+    name="pyshell2",
     version=str(get_version()),
+    description="Python library for running shell commands.",
+    url="https://github.com/Olindholm/pyshell2",
+    # Dependencies
     python_requires=">=3.8",
     install_requires=[deps],
     extras_require={
