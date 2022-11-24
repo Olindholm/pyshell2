@@ -14,7 +14,9 @@ jobs:
       - name: Ensure twine
         run: pip install twine --upgrade
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3'
+        with:
+          fetch-depth: 0
       - name: Calculate version
         run: |
           version=$(cat version.txt)
