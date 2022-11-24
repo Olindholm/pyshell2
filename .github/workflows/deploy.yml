@@ -19,12 +19,13 @@ jobs:
         run: |
           version=$(cat version.txt)
           patch=$(git rev-list --count $(git log --follow -1 --pretty=%H version.txt)..HEAD)
-          build=${{ github.run_attempt }}
 
-          echo "PACKAGE_VERSION=$version.$patch" >> $GITHUB_ENV
+          PACKAGE_VERSION=$version.$patch
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
           echo "Calculated package version: $PACKAGE_VERSION"
 
-          echo "BUILD_NUMBER=$build" >> $GITHUB_ENV
+          BUILD_NUMBER=${{ github.run_attempt }}
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
           echo "Build number: $BUILD_NUMBER"
       # Build
       # Upload to Pypi through twine
