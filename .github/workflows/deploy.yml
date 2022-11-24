@@ -16,7 +16,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 65535 # Full branch history (or at least very long)
+          fetch-depth: 65535 # Full branch history (or at least most of it)
       - name: Calculate version
         run: |
           version=$(cat version.txt)
@@ -31,5 +31,8 @@ jobs:
           echo "Build number: $BUILD_NUMBER"
       - name: Build Package
         run: python -m build --wheel
-      # Build
-      # Upload to Pypi through twine
+      # - name: Upload Package
+      #   run: |
+      #     python -m twine \
+      #       --verbose \
+      #       dist/*
