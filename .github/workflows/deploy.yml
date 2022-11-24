@@ -16,7 +16,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 65535 # Full branch history (or at least very long)
       - name: Calculate version
         run: |
           version=$(cat version.txt)
