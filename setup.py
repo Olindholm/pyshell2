@@ -5,6 +5,7 @@ deps = {
 }
 test_deps = {
     "pytest>=7",
+    "pytest-asyncio",
     "pytest-cov",
 }
 typing_deps = {
@@ -18,7 +19,7 @@ dev_deps = {
     "isort",
     *typing_deps,
     "flake8",
-    "flake8-pyproject",
+    "flake8-pyproject>=1.2.0",
 }
 
 setup(
