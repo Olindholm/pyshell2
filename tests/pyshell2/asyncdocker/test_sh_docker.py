@@ -4,12 +4,12 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
+from pyshell2.asyncdocker import sh_docker
 from pyshell2.asyncshell import (
     DEFAULT_CHECK_EXITCODE,
     DEFAULT_STDERR_LOG_LEVEL,
     DEFAULT_STDOUT_LOG_LEVEL,
     ProcessInfo,
-    sh_docker,
 )
 
 
@@ -122,7 +122,7 @@ from pyshell2.asyncshell import (
     ],
 )
 @pytest.mark.asyncio
-@patch("pyshell2.asyncshell.docker_run")
+@patch("pyshell2.asyncdocker.docker_run")
 async def test_pyshell2_asyncshell_sh_called(
     docker_run_mock: MagicMock,
     sh_docker_kwargs: Dict[str, Any],
@@ -139,7 +139,7 @@ async def test_pyshell2_asyncshell_sh_called(
 
 
 @pytest.mark.asyncio
-@patch("pyshell2.asyncshell.docker_run")
+@patch("pyshell2.asyncdocker.docker_run")
 async def test_return_value(
     sh_mock: MagicMock,
 ) -> None:
