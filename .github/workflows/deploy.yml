@@ -31,8 +31,10 @@ jobs:
           echo "Build number: $BUILD_NUMBER"
       - name: Build Package
         run: python -m build --wheel
-      # - name: Upload Package
-      #   run: |
-      #     python -m twine \
-      #       --verbose \
-      #       dist/*
+      - name: Upload Package
+        run: |
+          python -m twine \
+            --verbose \
+            --username __token__ \
+            --password ${{ secrets.PYPI_TOKEN }} \
+            dist/*
