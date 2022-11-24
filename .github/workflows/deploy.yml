@@ -27,5 +27,7 @@ jobs:
           BUILD_NUMBER=${{ github.run_attempt }}
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
           echo "Build number: $BUILD_NUMBER"
+      - name: Build Package
+        run: python -m build --wheel
       # Build
       # Upload to Pypi through twine
