@@ -15,7 +15,7 @@ DOCKER_USER_ME = f"{os.getuid()}:{os.getgid()}"
 DOCKER_USER_ROOT = "0:0"
 
 
-async def sh_docker(
+async def docker_sh(
     image: str,
     args: List[Union[str, Path]],
     user: Optional[str] = None,

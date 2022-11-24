@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from pyshell2.asyncdocker import sh_docker
+from pyshell2.asyncdocker import docker_sh
 from pyshell2.asyncshell import (
     DEFAULT_CHECK_EXITCODE,
     DEFAULT_STDERR_LOG_LEVEL,
@@ -132,7 +132,7 @@ async def test_pyshell2_asyncshell_sh_called(
     docker_run_mock.return_value = ProcessInfo(0, "stdout", "stderr")
 
     # Act
-    await sh_docker(**sh_docker_kwargs)
+    await docker_sh(**sh_docker_kwargs)
 
     # Assert
     assert docker_run_mock.call_args_list == [call(**docker_run_kwargs)]
@@ -147,7 +147,7 @@ async def test_return_value(
     sh_mock.return_value = ProcessInfo(9000, "Hello World!", "ERROR")
 
     # Act
-    process_info = await sh_docker(
+    process_info = await docker_sh(
         image="pyshell2/test:latest",
         args=["echo", "Hello World!"],
     )

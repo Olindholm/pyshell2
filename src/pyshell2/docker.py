@@ -11,7 +11,7 @@ from .shell import (
 )
 
 
-def sh_docker(
+def docker_sh(
     image: str,
     args: List[Union[str, Path]],
     user: Optional[str] = None,
@@ -51,7 +51,7 @@ def sh_docker(
             check_exitcode is true.
     """
     return asyncio.run(
-        asyncdocker.sh_docker(
+        asyncdocker.docker_sh(
             image=image,
             args=args,
             user=user,
