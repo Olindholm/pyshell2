@@ -22,8 +22,12 @@ dev_deps = {
 }
 
 setup(
+    # General
     name="pysh",
     version="0+dev",
+    description="Python library for running shell commands.",
+    url="https://github.com/Olindholm/pysh",
+    # Dependencies
     python_requires=">=3.8",
     install_requires=[deps],
     extras_require={
