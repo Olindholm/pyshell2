@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from pysh.asyncshell import (
+from pyshell2.asyncshell import (
     DEFAULT_CHECK_EXITCODE,
     DEFAULT_STDERR_LOG_LEVEL,
     DEFAULT_STDOUT_LOG_LEVEL,
@@ -18,14 +18,14 @@ from pysh.asyncshell import (
     [
         (
             {
-                "image": "pysh/echo",
+                "image": "pyshell2/echo",
                 "args": ["Hello World!"],
                 "stdout_log_level": 9000,
                 "stderr_log_level": -9000,
                 "check_exitcode": False,
             },
             {
-                "image": "pysh/echo",
+                "image": "pyshell2/echo",
                 "args": ["Hello World!"],
                 "detached": False,
                 "cleanup": True,
@@ -40,11 +40,11 @@ from pysh.asyncshell import (
         ),
         (
             {
-                "image": "pysh/echo",
+                "image": "pyshell2/echo",
                 "args": ["Hello World!"],
             },
             {
-                "image": "pysh/echo",
+                "image": "pyshell2/echo",
                 "args": ["Hello World!"],
                 "detached": False,
                 "cleanup": True,
@@ -59,11 +59,11 @@ from pysh.asyncshell import (
         ),
         (
             {
-                "image": "pysh/ls",
+                "image": "pyshell2/ls",
                 "args": [Path("dir")],
             },
             {
-                "image": "pysh/ls",
+                "image": "pyshell2/ls",
                 "args": ["/mnt/0/dir"],
                 "detached": False,
                 "cleanup": True,
@@ -78,11 +78,11 @@ from pysh.asyncshell import (
         ),
         (
             {
-                "image": "pysh/cat",
+                "image": "pyshell2/cat",
                 "args": [Path("chp0.txt"), Path("chp1.txt")],
             },
             {
-                "image": "pysh/cat",
+                "image": "pyshell2/cat",
                 "args": ["/mnt/0/chp0.txt", "/mnt/1/chp1.txt"],
                 "detached": False,
                 "cleanup": True,
@@ -100,11 +100,11 @@ from pysh.asyncshell import (
         ),
         (
             {
-                "image": "pysh/cat",
+                "image": "pyshell2/cat",
                 "args": [Path("story.txt"), Path("story.txt")],
             },
             {
-                "image": "pysh/cat",
+                "image": "pyshell2/cat",
                 "args": ["/mnt/0/story.txt", "/mnt/0/story.txt"],
                 "detached": False,
                 "cleanup": True,
@@ -122,8 +122,8 @@ from pysh.asyncshell import (
     ],
 )
 @pytest.mark.asyncio
-@patch("pysh.asyncshell.docker_run")
-async def test_pysh_asyncshell_sh_called(
+@patch("pyshell2.asyncshell.docker_run")
+async def test_pyshell2_asyncshell_sh_called(
     docker_run_mock: MagicMock,
     sh_docker_kwargs: Dict[str, Any],
     docker_run_kwargs: Dict[str, Any],
@@ -139,7 +139,7 @@ async def test_pysh_asyncshell_sh_called(
 
 
 @pytest.mark.asyncio
-@patch("pysh.asyncshell.docker_run")
+@patch("pyshell2.asyncshell.docker_run")
 async def test_return_value(
     sh_mock: MagicMock,
 ) -> None:
@@ -148,7 +148,7 @@ async def test_return_value(
 
     # Act
     process_info = await sh_docker(
-        image="pysh/test:latest",
+        image="pyshell2/test:latest",
         args=["echo", "Hello World!"],
     )
 

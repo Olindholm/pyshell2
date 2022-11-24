@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, call, patch
 
 import pytest
 
-from pysh.asyncshell import sh
+from pyshell2.asyncshell import sh
 
 
 def stream(lines: List[str] = []) -> StreamReader:

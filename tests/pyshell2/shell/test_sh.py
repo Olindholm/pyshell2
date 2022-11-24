@@ -2,8 +2,8 @@ import inspect
 from typing import Any, Dict
 from unittest.mock import MagicMock, call, patch
 
-from pysh import asyncshell
-from pysh.shell import ProcessInfo, sh
+from pyshell2 import asyncshell
+from pyshell2.shell import ProcessInfo, sh
 
 
 def test_signature() -> None:
@@ -14,7 +14,7 @@ def test_docstring() -> None:
     assert inspect.getdoc(sh) == inspect.getdoc(asyncshell.sh)
 
 
-@patch("pysh.asyncshell.sh")
+@patch("pyshell2.asyncshell.sh")
 def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
     signature = inspect.signature(sh)
@@ -29,7 +29,7 @@ def test_kwargs(asyncshell_sh_mock: MagicMock) -> None:
     assert asyncshell_sh_mock.call_args_list == [call(**params)]
 
 
-@patch("pysh.asyncshell.sh")
+@patch("pyshell2.asyncshell.sh")
 def test_return_value(asyncshell_sh_mock: MagicMock) -> None:
     # Arrange
     asyncshell_sh_mock.return_value = ProcessInfo(292, "stdout", "stderr")

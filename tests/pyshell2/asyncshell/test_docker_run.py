@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from pysh.asyncshell import (
+from pyshell2.asyncshell import (
     DEFAULT_CHECK_EXITCODE,
     DEFAULT_STDERR_LOG_LEVEL,
     DEFAULT_STDOUT_LOG_LEVEL,
@@ -21,7 +21,7 @@ EQ = '\\"'  # Esacped quote
     [
         (
             {
-                "image": "pysh/echo",
+                "image": "pyshell2/echo",
                 "args": ["Hello World!"],
                 "stdout_log_level": 9000,
                 "stderr_log_level": -9000,
@@ -33,7 +33,7 @@ EQ = '\\"'  # Esacped quote
                     "run",
                     "-d=false",
                     "--rm=true",
-                    "pysh/echo",
+                    "pyshell2/echo",
                     "Hello World!",
                 ],
                 "stdout_log_level": 9000,
@@ -43,7 +43,7 @@ EQ = '\\"'  # Esacped quote
         ),
         (
             {
-                "image": "pysh/echo",
+                "image": "pyshell2/echo",
                 "args": ["echo", "Hello World!"],
                 "user": DOCKER_USER_ME,
                 "entrypoint": "/bin/bash",
@@ -58,7 +58,7 @@ EQ = '\\"'  # Esacped quote
                     DOCKER_USER_ME,
                     "--entrypoint",
                     "/bin/bash",
-                    "pysh/echo",
+                    "pyshell2/echo",
                     "echo",
                     "Hello World!",
                 ],
@@ -69,7 +69,7 @@ EQ = '\\"'  # Esacped quote
         ),
         (
             {
-                "image": "pysh/ping",
+                "image": "pyshell2/ping",
                 "args": ["google.com"],
                 "network": "host",
             },
@@ -81,7 +81,7 @@ EQ = '\\"'  # Esacped quote
                     "--rm=true",
                     "--network",
                     "host",
-                    "pysh/ping",
+                    "pyshell2/ping",
                     "google.com",
                 ],
                 "stdout_log_level": DEFAULT_STDOUT_LOG_LEVEL,
@@ -91,7 +91,7 @@ EQ = '\\"'  # Esacped quote
         ),
         (
             {
-                "image": "pysh/ls",
+                "image": "pyshell2/ls",
                 "args": ["/mnt/dir"],
                 "volumes": {
                     Path("."): Path("/mnt/dir"),
@@ -111,7 +111,7 @@ EQ = '\\"'  # Esacped quote
                             f"{EQ}dst={Path('/mnt/dir').resolve()}{EQ}",
                         ]
                     ),
-                    "pysh/ls",
+                    "pyshell2/ls",
                     "/mnt/dir",
                 ],
                 "stdout_log_level": DEFAULT_STDOUT_LOG_LEVEL,
@@ -121,7 +121,7 @@ EQ = '\\"'  # Esacped quote
         ),
         (
             {
-                "image": "pysh/cat",
+                "image": "pyshell2/cat",
                 "args": ["/mnt/chp0.txt", "/mnt/chp1.txt"],
                 "volumes": {
                     Path("chp0.txt"): Path("/mnt/chp0.txt"),
@@ -150,7 +150,7 @@ EQ = '\\"'  # Esacped quote
                             f"{EQ}dst={Path('/mnt/chp1.txt').resolve()}{EQ}",
                         ]
                     ),
-                    "pysh/cat",
+                    "pyshell2/cat",
                     "/mnt/chp0.txt",
                     "/mnt/chp1.txt",
                 ],
@@ -162,8 +162,8 @@ EQ = '\\"'  # Esacped quote
     ],
 )
 @pytest.mark.asyncio
-@patch("pysh.asyncshell.sh")
-async def test_pysh_asyncshell_sh_called(
+@patch("pyshell2.asyncshell.sh")
+async def test_pyshell2_asyncshell_sh_called(
     sh_mock: MagicMock,
     docker_run_kwargs: Dict[str, Any],
     sh_kwargs: Dict[str, Any],
@@ -179,7 +179,7 @@ async def test_pysh_asyncshell_sh_called(
 
 
 @pytest.mark.asyncio
-@patch("pysh.asyncshell.sh")
+@patch("pyshell2.asyncshell.sh")
 async def test_return_value(
     sh_mock: MagicMock,
 ) -> None:
@@ -188,7 +188,7 @@ async def test_return_value(
 
     # Act
     process_info = await docker_run(
-        image="pysh/test:latest",
+        image="pyshell2/test:latest",
         args=["echo", "Hello World!"],
     )
 
