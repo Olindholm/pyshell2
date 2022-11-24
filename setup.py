@@ -1,4 +1,32 @@
+import logging
+import os
+
+from packaging.version import Version
 from setuptools import setup
+
+
+def get_env_var(env_var: str, default: str) -> str:
+    value = os.getenv(env_var)
+
+    if not value:
+        logging.warning(
+            f"Environment variable, ({env_var}), was not set. "
+            f"Defaulting to '{default}'."
+        )
+        return default
+
+    return value
+
+
+def get_version() -> Version:
+    version = get_env_var("PACKAGE_VERSION", "0+dev")
+    build = int(get_env_var("BUILD_NUMBER", "1")) - 1
+
+    if build > 0:
+        version = f"{version}.{build}"
+
+    return Version(version)
+
 
 deps = {
     "",
@@ -25,7 +53,7 @@ dev_deps = {
 setup(
     # General
     name="pyshell2",
-    version="0+dev",
+    version=str(get_version()),
     description="Python library for running shell commands.",
     url="https://github.com/Olindholm/pyshell2",
     # Dependencies

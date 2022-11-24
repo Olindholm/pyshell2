@@ -1,0 +1,40 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  Python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure pip
+        run: pip install pip --upgrade
+      - name: Ensure build
+        run: pip install build --upgrade
+      - name: Ensure twine
+        run: pip install twine --upgrade
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 65535 # Full branch history (or at least most of it)
+      - name: Calculate version
+        run: |
+          version=$(cat version.txt)
+          patch=$(git rev-list --count $(git log --follow -1 --pretty=%H version.txt)..HEAD)
+
+          PACKAGE_VERSION=$version.$patch
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          echo "Calculated package version: $PACKAGE_VERSION"
+
+          BUILD_NUMBER=${{ github.run_attempt }}
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+          echo "Build number: $BUILD_NUMBER"
+      - name: Build Package
+        run: python -m build --wheel
+      - name: Upload Package
+        run: |
+          python -m twine upload \
+            --verbose \
+            --username __token__ \
+            --password ${{ secrets.PYPI_TOKEN }} \
+            dist/*
