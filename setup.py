@@ -28,27 +28,13 @@ def get_version() -> Version:
     return Version(version)
 
 
-deps = {
-    "",
-}
-test_deps = {
-    "pytest>=7",
-    "pytest-asyncio",
-    "pytest-cov",
-}
-typing_deps = {
-    "mypy",
-    *test_deps,
-    "types-setuptools",
-}
-dev_deps = {
-    *test_deps,
-    "black",
-    "isort",
-    *typing_deps,
-    "flake8",
-    "flake8-pyproject>=1.2.0",
-}
+deps = [""]
+test_deps = ["pytest>=7", "pytest-asyncio", "pytest-cov"]
+black_deps = ["black==22.8.0"]
+isort_deps = ["isort==5.10.1"]
+mypy_deps = ["mypy==0.991", *test_deps, "types-setuptools", "packaging"]
+flake8_deps = ["flake8==6.0.0", "flake8-pyproject>=1.2.0"]
+dev_deps = [*test_deps, *black_deps, *isort_deps, *mypy_deps, *flake8_deps]
 
 setup(
     # General
@@ -58,10 +44,13 @@ setup(
     url="https://github.com/Olindholm/pyshell2",
     # Dependencies
     python_requires=">=3.8",
-    install_requires=[deps],
+    install_requires=deps,
     extras_require={
         "test": test_deps,
-        "typing": typing_deps,
+        "black": black_deps,
+        "isort": isort_deps,
+        "mypy": mypy_deps,
+        "flake8": flake8_deps,
         "dev": dev_deps,
     },
 )
